@@ -50,12 +50,18 @@ float hash(float n){return fract(sin(n)*43758.5453123);}
 float hash2(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}
 
 vec3 palette(float t){
-  t=clamp(t,0.,1.);
-  int i=int(floor(t*4.));
-  float f=fract(t*4.);
+  t=clamp(t,0.,0.999)*4.;
+  float i=floor(t);
+  float f=t-i;
   f=f*f*(3.-2.*f);
-  int j=min(i+1,4);
-  return mix(u_colors[i],u_colors[j],f);
+  vec3 c0=vec3(0.);
+  vec3 c1=vec3(0.);
+  for(int k=0;k<5;k++){
+    float fk=float(k);
+    if(fk==i) c0=u_colors[k];
+    if(fk==i+1.) c1=u_colors[k];
+  }
+  return mix(c0,c1,f);
 }
 
 float grain(vec2 uv,float strength){
